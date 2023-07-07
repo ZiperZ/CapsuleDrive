@@ -1,0 +1,31 @@
+version: 2.1
+
+jobs:
+  backend_test:
+    docker:
+    - image: cimg/node:current
+      environment:
+        MYSQL_USERNAME: root
+        MYSQL_HOST: '127.0.0.1'
+    - image: cimg/mysql:8.0.27
+      environment:
+        MYSQL_DATABASE: CapsuleDrive
+    steps:
+    - checkout
+    - run:
+        name: 'Install Project Dependencies'
+        command: 'cd backend && yarn'
+    - run: 
+        name: 'Wait for MySQL to get up and running'
+        command: |-
+          sudo apt-get update && sudo apt-get install -y mysql-client
+          dockerize -wait tcp://localhost:3306 -timeout 1m
+          mysql -h 127.0.0.1 -u root -e "SHOW DATABASES"
+    - run:
+        name: 'Begin Testing NodeJS Code'
+        command: 'cd backend && yarn test'
+
+workflows:
+  test_backend_code:
+    jobs:
+    - backend_test

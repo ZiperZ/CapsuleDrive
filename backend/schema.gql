@@ -1,0 +1,17 @@
+type query {
+  searchUsers(paginationValue: String)
+}
+
+type User {
+  id: String!
+  name: String
+  priviligededRepositories(): [Repository!]
+  sharedRepositories(): [Repository!]
+}
+
+type Repository {
+  id: String!
+  name: String!
+  privilegedUsers: [User!]
+  sharedUsers: [User!]
+}

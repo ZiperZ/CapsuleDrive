@@ -1,0 +1,58 @@
+# MySQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    tier: backend
+    type: mysql-database
+spec:
+  selector:
+    matchLabels:
+      tier: backend
+      type: mysql-database
+  template:
+    metadata:
+      labels:
+        tier: backend
+        type: mysql-database
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:latest
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        ports:
+        - containerPort: 3306
+---
+# Backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    tier: backend
+    type: server
+spec:
+  selector:
+    matchLabels:
+      tier: backend
+      type: server
+  template:
+    metadata:
+      name: backend
+      labels:
+        tier: backend
+        type: server
+    spec:
+      containers:
+      - image: backend:latest
+        name: backend
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
