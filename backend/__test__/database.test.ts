@@ -24,6 +24,7 @@ describe('Test if database and models properly works', () => {
   test('If User can create a Repository', async () => {
     const user = await User.create(await getRandomUserData());
     const repository = await Repository.create(await getRandomRepositoryData());
-    repository.addSharedUser(user);
+    repository.addOwnerUser(user);
+    expect(repository.getOwnerUsers({ where: {} }).then(ownerUsers => ownerUsers.map(v => v.id))).resolves.toBe([user.id]);
   });
 });
