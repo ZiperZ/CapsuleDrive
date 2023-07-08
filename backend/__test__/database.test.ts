@@ -25,5 +25,6 @@ describe('Test if database and models properly works', () => {
     const user = await User.create(await getRandomUserData());
     const repository = await Repository.create(await getRandomRepositoryData());
     repository.addSharedUser(user);
+    expect(repository.getSharedUsers().then(arr => arr.map(u => u.id))).resolves.toBe([user.id]);
   });
 });
