@@ -5,6 +5,7 @@ const config: JestConfigWithTsJest = {
   moduleNameMapper: {
     '^@Lib/(.*)$': ['<rootDir>/lib/$1'],
     '^@Models/(.*)$': ['<rootDir>/lib/Models/$1'],
+    '^@/(.*)$': ['<rootDir>/$1'],
   }
 };
 export default config;

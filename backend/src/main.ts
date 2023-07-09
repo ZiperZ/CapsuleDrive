@@ -1,11 +1,14 @@
+import fs from 'fs';
+import path from 'path';
+
+import type { ModelAttributes } from 'sequelize';
+import Passport from 'passport';
 import Express from 'express';
 import ExpressSession from 'express-session';
-import Passport from 'passport';
 
-import DownloadRouter from './Routes/download';
-import UploadRouter from './Routes/upload';
-
-import { ModelAttributes } from 'sequelize';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import type { ApolloContext } from './resolvers/types';
 
 declare global {
   namespace NodeJS {
@@ -13,7 +16,8 @@ declare global {
       MYSQL_USERNAME: string;
       MYSQL_PASSWORD: string;
       SESSION_SECRET: string;
-      PORT?: string;
+      SERVER_PORT: string;
+      FILE_STORAGE_PATH: string;
     }
   }
 
@@ -22,7 +26,9 @@ declare global {
   }
 }
 
-const app = Express();
+export const app = Express();
+export let listener: null | ReturnType<typeof app.listen>;
+
 app.use(ExpressSession({
   secret: process.env.SESSION_SECRET,
   saveUninitialized: false,
@@ -30,9 +36,25 @@ app.use(ExpressSession({
 }));
 app.use(Passport.session());
 
-app.use('/download', DownloadRouter);
-app.use('/upload', UploadRouter);
+const graphqlServer = new ApolloServer<ApolloContext>({
+  typeDefs: fs.readFileSync(path.resolve('schema.gql')).toString(),
+  resolvers: {
+    Query: {
 
-app.listen(process.env.PORT ?? 8000, () => {
-  console.log('Server has begun listening!');
+    }
+  }
 });
+
+async function main() {
+  await graphqlServer.start();
+  app.use('/graphql', expressMiddleware<ApolloContext>(graphqlServer, { 
+    context: async ({ req, res })=>({
+      user: req.user
+    } as ApolloContext) 
+  }));
+
+  listener = app.listen(process.env.SERVER_PORT, () => {
+    console.log('Server has begun listening!');
+  });
+}
+export const mainPromise = main();
