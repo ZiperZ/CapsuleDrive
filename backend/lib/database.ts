@@ -36,11 +36,10 @@ export async function initDatabase() {
     sequelize
   });
 
-  // User.belongsToMany(Repository, { as: 'OwnerUser', through: 'RepositoryOwners' });
-  // User.belongsToMany(Repository, { as: 'SharedUser', through: 'RepositorySharedUsers' });
-  Repository.hasMany(User, { as: { singular: 'OwnerUser', plural: 'OwnerUsers' } });
-  User.hasMany(Repository, { as: { singular: 'OwnerUser', plural: 'OwnerUsers' } });
-  Repository.hasMany(User, { as: { singular: 'SharedUser', plural: 'SharedUsers' } });
-  User.hasMany(Repository, { as: { singular: 'SharedUser', plural: 'SharedUsers' } });
+  User.belongsToMany(Repository, { as: 'OwnedRepository', through: 'RepositoryOwners' });
+  User.belongsToMany(Repository, { as: 'SharedRepository', through: 'RepositorySharedUsers' });
+  Repository.belongsToMany(User, { as: 'OwnerUser', through: 'RepositoryOwners' });
+  Repository.belongsToMany(User, { as: 'SharedUser', through: 'RepositorySharedUsers' });
+
   await sequelize.sync({ force: process.env.NODE_ENV==='test' });
 }
