@@ -32,6 +32,6 @@
   },
   "scripts": {
     "dev": "ts-node -r dotenv/config -r tsconfig-paths/register main.ts",
-    "test": "jest --verbose"
+    "test": "jest --detectOpenHandles --verbose"
   }
 }
