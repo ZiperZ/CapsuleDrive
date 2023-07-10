@@ -1,17 +1,40 @@
-type query {
-  searchUsers(paginationValue: String)
+type Query {
+  # searchUsers(username: String!, paginationValue: String): [User!]
+  # searchRepositories(repositoryName: String!, paginationValue: String): [Repository!]
+  getDirectoryContents(repositoryName: String!, directory: String!): [File!]
+  
+  # downloadFile(repositoryName: String!, filePath: String!): Upload
+  # downloadDirectory(repositoryName: String!, directory: String!): Upload
 }
 
+# type Mutation {
+#   # uploadFile(repositoryName: String!, file: Upload!, filePath: String!)
+# }
+
 type User {
-  id: String!
-  name: String
-  priviligededRepositories(): [Repository!]
-  sharedRepositories(): [Repository!]
+  id: ID!
+  name: String!
+  ownedRepositories: [Repository!]
+  sharedRepositories: [Repository!]
 }
 
 type Repository {
-  id: String!
+  id: ID!
   name: String!
-  privilegedUsers: [User!]
+  ownerUsers: [User!]!
   sharedUsers: [User!]
+}
+
+type File {
+  id: ID!
+  name: String!
+  size: String!
+  path: String!
+}
+
+type Directory {
+  id: ID!
+  name: String!
+  path: String!
+  size: String
 }

@@ -7,6 +7,9 @@ jobs:
       environment:
         MYSQL_USERNAME: root
         MYSQL_HOST: '127.0.0.1'
+        SERVER_PORT: 8000
+        SESSION_SECRET: 'DummySecret'
+        FILE_STORAGE_PATH: /etc/fileStorage
     - image: cimg/mysql:8.0.27
       environment:
         MYSQL_DATABASE: CapsuleDrive

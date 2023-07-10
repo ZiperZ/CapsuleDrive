@@ -9,6 +9,10 @@ describe('Test if database and models properly works', () => {
     await initDatabase();
   }, 10_000);
 
+  afterAll(async () => {
+    await sequelize.close();
+  });
+
   test('If User creation works', async () => {
     const user = await User.create(await getRandomUserData());
     expect(user.id).not.toBeNull();
@@ -25,6 +29,15 @@ describe('Test if database and models properly works', () => {
     const user = await User.create(await getRandomUserData());
     const repository = await Repository.create(await getRandomRepositoryData());
     await repository.addSharedUser(user);
-    expect(repository.getSharedUsers().then(arr => arr.map(u => u.id))).resolves.toStrictEqual([user.id]);
+    console.log(`Shared repository with User ${user.id}`);
+    await expect(repository.getSharedUsers().then(arr => arr.map(u => u.id))).resolves.toStrictEqual([user.id]);
+  });
+
+  test('If user can create folder for a repository', async () => {
+    const user = await User.create(await getRandomUserData());
+    const repository = await Repository.create(await getRandomRepositoryData());
+    await repository.addSharedUser(user);
+    const folder = await repository.createFolder({ path: '/' });
+    await expect(repository.hasFolder(folder.id)).resolves.toBe(true);
   });
 });
