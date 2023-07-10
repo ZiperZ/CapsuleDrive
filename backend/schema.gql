@@ -1,7 +1,7 @@
 type Query {
   # searchUsers(username: String!, paginationValue: String): [User!]
   # searchRepositories(repositoryName: String!, paginationValue: String): [Repository!]
-  # getDirectoryContents(repositoryName: String!, directory: String!): [File!]
+  getDirectoryContents(repositoryName: String!, directory: String!): [File!]
   
   # downloadFile(repositoryName: String!, filePath: String!): Upload
   # downloadDirectory(repositoryName: String!, directory: String!): Upload
@@ -12,28 +12,29 @@ type Query {
 # }
 
 type User {
-  id: String!
+  id: ID!
   name: String!
   ownedRepositories: [Repository!]
   sharedRepositories: [Repository!]
 }
 
 type Repository {
-  id: String!
+  id: ID!
   name: String!
   ownerUsers: [User!]!
   sharedUsers: [User!]
 }
 
 type File {
-  id: String!
+  id: ID!
   name: String!
   size: String!
   path: String!
 }
 
 type Directory {
-  id: String!
+  id: ID!
   name: String!
+  path: String!
   size: String
 }
