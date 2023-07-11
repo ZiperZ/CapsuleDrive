@@ -10,7 +10,7 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import type { ApolloContext } from './Resolvers/types';
 
-import getDirectoryContents from '@Resolvers/getDirectoryContents';
+import directoryContents from '@Resolvers/directoryContents';
 
 declare global {
   namespace NodeJS {
@@ -42,7 +42,7 @@ const graphqlServer = new ApolloServer<ApolloContext>({
   typeDefs: fs.readFileSync(path.resolve('schema.gql')).toString(),
   resolvers: {
     Query: {
-      getDirectoryContents
+      directoryContents
     }
   }
 });
