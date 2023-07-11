@@ -2,33 +2,44 @@
 
 import { useParams } from 'next/navigation';
 import { useQuery } from 'react-query';
-import { gql, request } from 'graphql-request';
+import { GraphQLClient, gql } from 'graphql-request';
 
-import RepositoryItem from '@/components/RepositoryItem';
+import { RepositoryItemProps } from '@/components/RepositoryItem';
 import RepositoryView from '@/components/RepositoryView';
 
-const handleFetch = async (repositoryName: string) => {
-  const response = await request(process.env.NEXT_PUBLIC_API_URL, gql`
-    query($repositoryName: String!) {
-      repositoryByName(repositoryName: $repositoryName)
+const handleFetch = async (repositoryName: string, signal: AbortSignal | undefined) => {
+  type FetchedDataType = { 
+    directoryContents: Array<RepositoryItemProps>
+  };
+  const client = new GraphQLClient(process.env.NEXT_PUBLIC_API_URL, { signal });
+  const response = await client.request<FetchedDataType, { repositoryName: string }>(gql`#graphql
+    query FetchDirectoryItems($repositoryName: String!) {
+      directoryContents(repositoryName: $repositoryName) {
+        id
+        name
+        size
+        path
+      }
     }
   `, {
     repositoryName
   });
+
+  return response.directoryContents;
 };
 
 const Page = () => {
   const { repositoryName } = useParams();
-  const { data, status } = useQuery([repositoryName], () => handleFetch(repositoryName));
+  const { data, status } = useQuery([repositoryName], ({ signal }) => handleFetch(repositoryName, signal));
+
+  let items: RepositoryItemProps[] = [];
+  if (status === 'success') {
+    items = data;
+  }
 
   return (
     <div className="">
-      <RepositoryView>
-        <RepositoryItem key="1" name="test" filetype="text" />
-        <RepositoryItem key="2" name="test" filetype="text" />
-        <RepositoryItem key="3" name="test" filetype="text" />
-        <RepositoryItem key="4" name="test" filetype="text" />
-      </RepositoryView>
+      <RepositoryView items={items} />
     </div>
   );
 };
