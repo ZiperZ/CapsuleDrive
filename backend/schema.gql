@@ -1,7 +1,7 @@
 type Query {
   # searchUsers(username: String!, paginationValue: String): [User!]
   # searchRepositories(repositoryName: String!, paginationValue: String): [Repository!]
-  getDirectoryContents(repositoryName: String!, directory: String!): [File!]
+  directoryContents(repositoryName: String!, directory: String!): [File!]
   
   # downloadFile(repositoryName: String!, filePath: String!): Upload
   # downloadDirectory(repositoryName: String!, directory: String!): Upload
