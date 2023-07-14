@@ -14,12 +14,13 @@ describe('Test GraphQL Server', () => {
   });
 
   test('If Apollo GraphQL Server is responding', async () => {
-    const response = await client.request(
+    const response = await client.request<{ __typename: string }>(
       gql`
       query CheckHealth { 
         __typename
       }`,
       {}, { 'apollo-require-preflight': 'true' });
-    expect(response).not.toBeNull();
+    console.log(`response.__typename is "${response.__typename}" which must be 'Query'`);
+    expect(response.__typename).toBe('Query');
   });
 });

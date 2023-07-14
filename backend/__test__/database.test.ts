@@ -29,7 +29,7 @@ describe('Test if database and models properly works', () => {
     const user = await User.create(await getRandomUserData());
     const repository = await Repository.create(await getRandomRepositoryData());
     await repository.addSharedUser(user);
-    console.log(`Shared repository with User ${user.id}`);
+    console.log(`Shared repository with User "${user.id}"`);
     await expect(repository.getSharedUsers().then(arr => arr.map(u => u.id))).resolves.toStrictEqual([user.id]);
   });
 
@@ -38,6 +38,7 @@ describe('Test if database and models properly works', () => {
     const repository = await Repository.create(await getRandomRepositoryData());
     await repository.addSharedUser(user);
     const folder = await repository.createFolder({ path: '/' });
+    console.log(`Created folder with id "${folder.id}"`);
     await expect(repository.hasFolder(folder.id)).resolves.toBe(true);
   });
 });
