@@ -33,7 +33,8 @@
       "@/*": ["./*"],
       "@Lib/*": ["./lib/*"],
       "@Models/*": ["./lib/Models/*"],
-      "@Resolvers/*": ["./src/Resolvers/*"]
+      "@Resolvers/*": ["./src/Resolvers/*"],
+      "@Routes/*": ["./src/Routes/*"]
     },                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */

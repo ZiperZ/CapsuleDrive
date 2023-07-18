@@ -1,0 +1,80 @@
+openapi: '3.0.0'
+info:
+  title: API Specification of CapsuleDrive Backend
+  version: '0.1'
+components:
+  schemas:
+    isLoggedIn:
+      type: object
+      properties:
+        isLogged:
+          type: boolean
+        message:
+          type: string
+paths:
+  '/auth/register':
+    summary: Create a new user in database.
+    post:
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: User has been created in database.
+        401:
+          description: User creation arguments are invalid.
+  '/auth/login':
+    summary: Along with valid user credentials authorize user.
+    post:
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: User credentials accepted and user has been authorized.
+        401:
+          description: User credentials are invalid.
+  '/auth/is-logged':
+    get:
+      summary: Check whether user is already logged in
+      responses:
+        200:
+          description: Indicates that user is logged in
+          content:
+            'application/json':
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/isLoggedIn'
+                - type: object
+                  properties:
+                    isLogged:
+                      type: boolean
+                      enum: [ true ]
+        400:
+          description: Indicates that user is NOT logged in
+          content:
+            'application/json':
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/isLoggedIn'
+                - type: object
+                  properties:
+                    isLogged:
+                      type: boolean
+                      enum: [ false ]

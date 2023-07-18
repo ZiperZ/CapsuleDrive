@@ -7,6 +7,7 @@ const config: JestConfigWithTsJest = {
     '^@Lib/(.*)$': ['<rootDir>/lib/$1'],
     '^@Models/(.*)$': ['<rootDir>/lib/Models/$1'],
     '^@Resolvers/(.*)$': ['<rootDir>/src/Resolvers/$1'],
+    '^@Routes/(.*)$': ['<rootDir>/src/Routes/$1'],
   }
 };
 export default config;

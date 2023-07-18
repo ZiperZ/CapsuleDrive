@@ -58,3 +58,7 @@ export async function initDatabase() {
 
   await sequelize.sync({ force: process.env.NODE_ENV==='test' });
 }
+
+export async function closeDatabase() {
+  await sequelize.close();
+}

@@ -4,7 +4,7 @@ import Bcrypt from 'bcrypt';
 
 import User from '@Models/User';
 
-Passport.use(new PassportLocal.Strategy(async (email, password, cb) => {
+Passport.use(new PassportLocal.Strategy({ usernameField: 'email' }, async (email, password, cb) => {
   const user = await User.findOne({
     where: {
       email,
@@ -12,7 +12,7 @@ Passport.use(new PassportLocal.Strategy(async (email, password, cb) => {
   });
 
   // in order to protect privacy, we will NOT tell if email or password is wrong
-  if (!user || await Bcrypt.compare(password, user.password)) {
+  if (!user || !(await Bcrypt.compare(password, user.password))) {
     cb('Unable to match such a e-mail and password.');
     return;
   }

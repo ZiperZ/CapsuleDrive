@@ -10,7 +10,9 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import type { ApolloContext } from './Resolvers/types';
 
+import authRoute from '@Routes/auth';
 import directoryContents from '@Resolvers/directoryContents';
+import { closeDatabase, initDatabase, sequelize } from '@/lib/database';
 
 declare global {
   namespace NodeJS {
@@ -47,7 +49,10 @@ const graphqlServer = new ApolloServer<ApolloContext>({
   }
 });
 
+app.use('/auth', authRoute);
+
 async function main() {
+  await initDatabase();
   await graphqlServer.start();
   app.use('/graphql', Express.json(), expressMiddleware<ApolloContext>(graphqlServer, { 
     context: async ({ req, res })=>({
@@ -58,5 +63,8 @@ async function main() {
   listener = app.listen(process.env.SERVER_PORT, () => {
     console.log('Server has begun listening!');
   });
+  listener.on('close', () => {
+    closeDatabase();
+  })
 }
 export const mainPromise = main();

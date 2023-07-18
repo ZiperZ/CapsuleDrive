@@ -1,4 +1,4 @@
-import { initDatabase, sequelize } from '@Lib/database';
+import { closeDatabase, initDatabase, sequelize } from '@Lib/database';
 import { getRandomUserData, getRandomRepositoryData } from './random';
 
 import User from '@Lib/Models/User';
@@ -10,7 +10,7 @@ describe('Test if database and models properly works', () => {
   }, 10_000);
 
   afterAll(async () => {
-    await sequelize.close();
+    await closeDatabase();
   });
 
   test('If User creation works', async () => {
